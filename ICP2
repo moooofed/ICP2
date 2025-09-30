@@ -1,0 +1,35 @@
+#
+import pandas as pd
+
+df_global = pd.read_csv('https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv', parse_dates=['Date'])
+df_regional = df_global.pivot(index='Date', columns='Country', values='Confirmed')
+df_regional = df_regional[['US', 'Germany', 'Italy', 'United Kingdom', 'Brazil', 'China']]  # Select key countries
+
+import plotly.express as px
+
+df_long = df_regional.reset_index().melt(id_vars='Date', var_name='Country', value_name='Confirmed')
+
+fig = px.line(df_long,
+              x='Date',
+              y='Confirmed',
+              color='Country',
+              title='Interactive COVID-19 Confirmed Cases Over Time',
+              labels={'Confirmed': 'Confirmed Cases', 'Date': 'Date'})
+fig.show()
+
+#
+latest = df_regional.iloc[-1]
+slices = latest.values
+activities = latest.index.tolist()
+
+import plotly.graph_objects as go
+
+fig2 = go.Figure(data=[go.Pie(labels=activities,
+                              values=slices,
+                              textinfo='label+percent',
+                              hoverinfo='label+value',
+                              marker=dict(colors=['#4C8BE2','#00e061','#FF8C00','#DC3977','#7C1D6F','#089099']),
+                              pull=[0.02]*len(slices))])
+
+fig2.update_layout(title='Total COVID-19 Cases by Country (Interactive Pie)')
+fig2.show()
