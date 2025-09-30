@@ -17,7 +17,7 @@ fig = px.line(df_long,
               labels={'Confirmed': 'Confirmed Cases', 'Date': 'Date'})
 fig.show()
 
-#
+# Covid 19 cases
 latest = df_regional.iloc[-1]
 slices = latest.values
 activities = latest.index.tolist()
